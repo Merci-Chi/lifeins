@@ -1,239 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Glass Card Dashboard</title>
-  <style>
-    :root {
-      --bg: #000;
-      --text: #fff;
-      --line: rgba(255,255,255,.22);
-      --line2: rgba(255,255,255,.42);
-      --muted: rgba(255,255,255,.78);
-      --glass: rgba(0,0,0,.55);
-      --glass2: rgba(0,0,0,.35);
-      --accent: rgba(120,255,170,.9);
-      --warn: rgba(255,220,120,.9);
-      --bad: rgba(255,120,120,.9);
-      --shadow: 0 10px 30px rgba(0,0,0,.55);
-      --radius: 18px;
-      --fontA: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      --maxw: 1200px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Interactive Glass Cards</title>
+<style>
+:root {
+  --bg: #000;
+  --text: #fff;
+  --line: rgba(255,255,255,.22);
+  --line2: rgba(255,255,255,.42);
+  --muted: rgba(255,255,255,.78);
+  --glass: rgba(0,0,0,.55);
+  --glass2: rgba(0,0,0,.35);
+  --accent: rgba(120,255,170,.9);
+  --shadow: 0 10px 30px rgba(0,0,0,.55);
+  --radius: 18px;
+  --fontA: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --maxw: 1200px;
+}
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin:0; font-family: var(--fontA); background: var(--bg); color: var(--text); }
-    body {
-      background: radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,.08), transparent 55%),
-                  radial-gradient(900px 700px at 90% 20%, rgba(255,255,255,.06), transparent 60%),
-                  radial-gradient(900px 700px at 30% 90%, rgba(255,255,255,.05), transparent 60%),
-                  var(--bg);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+* { box-sizing: border-box; }
+html, body { margin:0; height:100%; font-family: var(--fontA); background: var(--bg); color: var(--text); }
 
-    .wrap {
-      width: 100%;
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 20px 16px 100px;
-    }
+body {
+  background: radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,.08), transparent 55%),
+              radial-gradient(900px 700px at 90% 20%, rgba(255,255,255,.06), transparent 60%),
+              radial-gradient(900px 700px at 30% 90%, rgba(255,255,255,.05), transparent 60%),
+              var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
 
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 20px;
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(0,0,0,.65);
-    }
+.wrap { max-width: var(--maxw); margin:0 auto; padding:20px 16px 100px; }
 
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      margin-bottom: 20px;
-      padding: 12px;
-      display:flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(12px);
-      background: rgba(0,0,0,.45);
-      border-radius: var(--radius);
-      border: 1px solid var(--line2);
-    }
+.card { 
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border: 1px solid var(--line); 
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  padding:20px;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow:0 15px 35px rgba(0,0,0,.65); }
 
-    .header .title {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: .3px;
-    }
-    .header .subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
+.header { display:flex; justify-content: space-between; align-items:center; margin-bottom:20px; padding:12px;
+  backdrop-filter: blur(12px); background: rgba(0,0,0,.45); border-radius: var(--radius); border:1px solid var(--line2); }
+.header .title { font-size:20px; font-weight:800; letter-spacing:.3px; }
+.header .subtitle { font-size:12px; color: var(--muted); }
+.btn { appearance:none; border:1px solid var(--line2); background: var(--glass2); color: var(--text); border-radius:999px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer; transition: transform .08s ease, background .15s ease, border-color .15s ease; }
+.btn:hover { background: rgba(255,255,255,.12); }
+.btn:active { transform: scale(.97); }
 
-    .btn {
-      appearance:none;
-      border: 1px solid var(--line2);
-      background: var(--glass2);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .08s ease, background .15s ease, border-color .15s ease;
-    }
-    .btn:hover { background: rgba(255,255,255,.12); }
-    .btn:active { transform: scale(.97); }
+.grid { display:grid; gap:16px; grid-template-columns:1fr; }
+@media(min-width:900px){ .grid { grid-template-columns: repeat(2,1fr); } }
 
-    .grid {
-      display:grid;
-      gap: 16px;
-      grid-template-columns: 1fr;
-    }
-    @media(min-width: 900px){
-      .grid { grid-template-columns: repeat(2, 1fr); }
-    }
+.panel { display:flex; flex-direction: column; gap:12px; }
 
-    .panel {
-      display:flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.panel h2 { margin:0 0 10px; font-size:14px; letter-spacing:.4px; text-transform:uppercase; color: rgba(255,255,255,.9); }
+.panel .muted { font-size:12px; color: var(--muted); line-height:1.35; }
 
-    .panel h2 {
-      margin: 0 0 10px;
-      font-size: 14px;
-      letter-spacing: .4px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.9);
-    }
+.card-list { display:flex; flex-direction: column; gap:12px; }
+.card-item { display:flex; flex-direction: column; gap:6px; padding:16px; border-radius: var(--radius); border:1px solid var(--line); background: var(--glass); cursor:pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.card-item:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.55); }
 
-    .panel .muted {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
+.card-item .name { font-size:14px; font-weight:800; }
+.card-item .meta { font-size:11px; color: var(--muted); }
 
-    .card-list {
-      display:flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+/* card type variants */
+.card-item.full { width: 100%; }
+.card-item.half { width: 48%; }
+.card-item.half-wrapper { display:flex; gap:4%; flex-wrap:wrap; }
 
-    .card-item {
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--glass);
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .card-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(0,0,0,.55);
-    }
-
-    .card-item .name {
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .card-item .meta {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .footerBar {
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72));
-      display:flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .progress {
-      flex:1;
-      height:10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.1);
-      border:1px solid rgba(255,255,255,.18);
-      overflow:hidden;
-      margin-right:12px;
-    }
-    .bar {
-      width: 0%;
-      height: 100%;
-      background: var(--accent);
-    }
-  </style>
+/* Modal */
+.modal {
+  position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,.75);
+  display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition: opacity .2s ease;
+}
+.modal.active { opacity:1; pointer-events:auto; }
+.modal-content { background: var(--glass); border-radius: var(--radius); border:1px solid var(--line); padding:24px; max-width:400px; width:90%; text-align:center; backdrop-filter: blur(12px); animation: scaleIn .2s ease; }
+@keyframes scaleIn { 0% { transform: scale(.85); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+.close-btn { margin-top:16px; padding:8px 16px; border-radius:999px; background: var(--glass2); border:1px solid var(--line2); cursor:pointer; color: var(--text); font-weight:700; }
+.close-btn:hover { background: rgba(255,255,255,.12); }
+</style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="card header">
-      <div>
-        <p class="title">Dashboard</p>
-        <p class="subtitle">Modern glassy card template</p>
-      </div>
-      <div>
-        <button class="btn">Action</button>
-      </div>
+<div class="wrap">
+  <div class="card header">
+    <div>
+      <p class="title">Interactive Dashboard</p>
+      <p class="subtitle">Click cards to see details</p>
     </div>
+    <div><button class="btn">Action</button></div>
+  </div>
 
-    <div class="grid">
-      <div class="card panel">
-        <h2>Panel 1</h2>
-        <p class="muted">Use this section for any content you like. Lists, stats, anything.</p>
-        <div class="card-list">
-          <div class="card-item">
-            <p class="name">Card One</p>
-            <p class="meta">Details about this card</p>
+  <div class="grid">
+    <div class="card panel">
+      <h2>Panel 1</h2>
+      <p class="muted">Full and half cards with pop-ups.</p>
+      <div class="card-list">
+        <div class="card-item full" data-detail="This is a detailed popup for Card One."> 
+          <p class="name">Full Card One</p>
+          <p class="meta">Detailed info</p>
+        </div>
+
+        <div class="half-wrapper">
+          <div class="card-item half" data-detail="This is Half Card A details.">
+            <p class="name">Half Card A</p>
+            <p class="meta">Info snippet</p>
           </div>
-          <div class="card-item">
-            <p class="name">Card Two</p>
-            <p class="meta">More info here</p>
-          </div>
-          <div class="card-item">
-            <p class="name">Card Three</p>
-            <p class="meta">Extra details</p>
+          <div class="card-item half" data-detail="This is Half Card B details.">
+            <p class="name">Half Card B</p>
+            <p class="meta">Info snippet</p>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="card panel">
-        <h2>Panel 2</h2>
-        <p class="muted">Another section. Can add cards, buttons, stats, charts, etc.</p>
-        <div class="card-list">
-          <div class="card-item">
-            <p class="name">Card A</p>
-            <p class="meta">Any content goes here</p>
+    <div class="card panel">
+      <h2>Panel 2</h2>
+      <p class="muted">Mix and match card types.</p>
+      <div class="card-list">
+        <div class="card-item full" data-detail="Full Card Alpha popup!">
+          <p class="name">Full Card Alpha</p>
+          <p class="meta">More info</p>
+        </div>
+
+        <div class="half-wrapper">
+          <div class="card-item half" data-detail="Half Card X popup info.">
+            <p class="name">Half Card X</p>
+            <p class="meta">Snippet</p>
           </div>
-          <div class="card-item">
-            <p class="name">Card B</p>
-            <p class="meta">Keep it modular</p>
+          <div class="card-item half" data-detail="Half Card Y popup info.">
+            <p class="name">Half Card Y</p>
+            <p class="meta">Snippet</p>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="footerBar">
-    <div class="progress"><div class="bar" style="width:45%"></div></div>
-    <div class="meta" style="font-size:11px; color:var(--muted)">Footer info • Status</div>
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <p id="modal-text">Modal content here</p>
+    <button class="close-btn" id="closeModal">Close</button>
   </div>
+</div>
+
+<script>
+const modal = document.getElementById('modal');
+const modalText = document.getElementById('modal-text');
+const closeBtn = document.getElementById('closeModal');
+
+document.querySelectorAll('.card-item').forEach(card => {
+  card.addEventListener('click', () => {
+    modalText.textContent = card.dataset.detail;
+    modal.classList.add('active');
+  });
+});
+
+closeBtn.addEventListener('click', () => {
+  modal.classList.remove('active');
+});
+
+modal.addEventListener('click', (e) => {
+  if(e.target === modal) modal.classList.remove('active');
+});
+</script>
 </body>
 </html>
