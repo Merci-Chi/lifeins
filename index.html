@@ -1,395 +1,183 @@
-<!-- insurance-study.html (FIXED: quiz handler syntax, missing qaLabel2 ref, init override) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-  <title>Life Insurance Types — Study App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Glass Card Dashboard</title>
   <style>
-    :root{
-      --bg:#000;
-      --text:#fff;
+    :root {
+      --bg: #000;
+      --text: #fff;
       --line: rgba(255,255,255,.22);
       --line2: rgba(255,255,255,.42);
       --muted: rgba(255,255,255,.78);
       --glass: rgba(0,0,0,.55);
       --glass2: rgba(0,0,0,.35);
-      --good: rgba(120,255,170,.9);
-      --bad: rgba(255,120,120,.9);
+      --accent: rgba(120,255,170,.9);
       --warn: rgba(255,220,120,.9);
+      --bad: rgba(255,120,120,.9);
       --shadow: 0 10px 30px rgba(0,0,0,.55);
       --radius: 18px;
       --fontA: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      --fontB: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      --maxw: 980px;
+      --maxw: 1200px;
     }
-    *{ box-sizing: border-box; }
-    html, body{ height: 100%; }
-    body{
-      margin: 0;
-      font-family: var(--fontA);
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin:0; font-family: var(--fontA); background: var(--bg); color: var(--text); }
+    body {
       background: radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,.08), transparent 55%),
                   radial-gradient(900px 700px at 90% 20%, rgba(255,255,255,.06), transparent 60%),
                   radial-gradient(900px 700px at 30% 90%, rgba(255,255,255,.05), transparent 60%),
                   var(--bg);
-      color: var(--text);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
-      overflow-x: hidden;
     }
-    .wrap{
+
+    .wrap {
       width: 100%;
       max-width: var(--maxw);
       margin: 0 auto;
-      padding: 16px 14px 110px;
+      padding: 20px 16px 100px;
     }
-    .card{
+
+    .card {
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      padding: 20px;
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .header{
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0,0,0,.65);
+    }
+
+    .header {
       position: sticky;
       top: 0;
       z-index: 50;
+      margin-bottom: 20px;
       padding: 12px;
-      margin: 10px 0 14px;
-    }
-    .headRow{
       display:flex;
-      gap: 10px;
-      align-items:center;
       justify-content: space-between;
-      flex-wrap: wrap;
+      align-items: center;
+      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,.45);
+      border-radius: var(--radius);
+      border: 1px solid var(--line2);
     }
-    .titleBlock{
-      display:flex;
-      gap:10px;
-      align-items:baseline;
-      min-width: 240px;
-    }
-    .title{
-      font-size: 18px;
+
+    .header .title {
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: .3px;
-      margin: 0;
     }
-    .subtitle{
+    .header .subtitle {
       font-size: 12px;
       color: var(--muted);
-      margin: 0;
-      opacity: .95;
     }
-    .pillRow{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content: flex-end;
-      flex: 1;
-      min-width: 240px;
-    }
-    .btn{
+
+    .btn {
       appearance:none;
       border: 1px solid var(--line2);
-      background: rgba(0,0,0,.35);
+      background: var(--glass2);
       color: var(--text);
       border-radius: 999px;
-      padding: 9px 12px;
+      padding: 8px 14px;
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: .2px;
       cursor: pointer;
-      user-select: none;
       transition: transform .08s ease, background .15s ease, border-color .15s ease;
-      white-space: nowrap;
     }
-    .btn:active{ transform: scale(.98); }
-    .btn.primary{
-      background: rgba(255,255,255,.12);
-      border-color: rgba(255,255,255,.55);
-    }
-    .btn.ghost{
-      background: rgba(0,0,0,.15);
-      border-color: var(--line);
-      color: var(--muted);
-    }
-    .btn.badge{
-      padding: 7px 10px;
-      font-weight: 800;
-    }
-    .btn.active{
-      background: rgba(255,255,255,.16);
-      border-color: rgba(255,255,255,.7);
-    }
+    .btn:hover { background: rgba(255,255,255,.12); }
+    .btn:active { transform: scale(.97); }
 
-    .grid{
+    .grid {
       display:grid;
-      gap: 12px;
+      gap: 16px;
       grid-template-columns: 1fr;
     }
-    @media (min-width: 820px){
-      .grid{ grid-template-columns: 1.2fr .8fr; }
+    @media(min-width: 900px){
+      .grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    .panel{ padding: 14px; }
-    .panel h2{
+    .panel {
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel h2 {
       margin: 0 0 10px;
       font-size: 14px;
       letter-spacing: .4px;
       text-transform: uppercase;
       color: rgba(255,255,255,.9);
     }
-    .panel .muted{
+
+    .panel .muted {
+      font-size: 12px;
       color: var(--muted);
-      font-size: 12px;
       line-height: 1.35;
-      margin: 0 0 10px;
     }
 
-    .row{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-    .search{
-      flex: 1;
-      min-width: 220px;
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.25);
-    }
-    .search input{
-      width:100%;
-      border:0;
-      outline:0;
-      background: transparent;
-      color: var(--text);
-      font-size: 13px;
-    }
-    .search input::placeholder{ color: rgba(255,255,255,.55); }
-
-    .stats{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .stat{
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
-    }
-    .stat .k{
-      font-size: 11px;
-      color: rgba(255,255,255,.72);
-      margin-bottom: 6px;
-      letter-spacing: .2px;
-    }
-    .stat .v{
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: .3px;
-    }
-
-    .list{
+    .card-list {
       display:flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
     }
-    .item{
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
+
+    .card-item {
       display:flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--glass);
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .itemTop{
-      display:flex;
-      gap: 10px;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
+    .card-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.55);
     }
-    .name{
-      font-weight: 900;
-      letter-spacing: .2px;
+
+    .card-item .name {
       font-size: 14px;
-      margin: 0;
-    }
-    .meta{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content: flex-end;
-    }
-    .tag{
-      font-size: 11px;
       font-weight: 800;
-      padding: 6px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.85);
     }
-    .tag.term{ border-color: rgba(120,170,255,.6); }
-    .tag.perm{ border-color: rgba(120,255,170,.6); }
-    .tag.spec{ border-color: rgba(255,220,120,.6); }
 
-    .features{
-      margin: 0;
-      padding-left: 16px;
-      color: rgba(255,255,255,.88);
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .features li{ margin: 4px 0; }
-
-    .controls{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .tiny{
+    .card-item .meta {
       font-size: 11px;
-      color: rgba(255,255,255,.72);
-      line-height: 1.35;
-      margin: 0;
+      color: var(--muted);
     }
 
-    .studyCard{
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 280px;
-    }
-    .studyTitle{
-      margin: 0;
-      font-size: 15px;
-      font-weight: 950;
-      letter-spacing: .25px;
-    }
-    .studyBody{
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-    }
-    .qaLabel{
-      font-size: 11px;
-      letter-spacing: .4px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.72);
-      margin: 0;
-    }
-    .qaText{
-      margin: 0;
-      font-size: 13px;
-      color: rgba(255,255,255,.92);
-      line-height: 1.45;
-    }
-    .divider{
-      height: 1px;
-      background: var(--line);
-      opacity: .9;
-      margin: 4px 0;
-    }
-
-    .choices{
-      display:flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .choice{
-      text-align:left;
-      border-radius: 14px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color: rgba(255,255,255,.92);
-      font-size: 12px;
-      font-weight: 800;
-      cursor:pointer;
-      transition: transform .08s ease, background .15s ease, border-color .15s ease;
-    }
-    .choice:active{ transform: scale(.99); }
-    .choice.correct{
-      border-color: rgba(120,255,170,.75);
-      background: rgba(120,255,170,.12);
-    }
-    .choice.wrong{
-      border-color: rgba(255,120,120,.75);
-      background: rgba(255,120,120,.12);
-    }
-
-    .footerBar{
+    .footerBar {
       position: fixed;
       left: 0; right: 0; bottom: 0;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72) 35%, rgba(0,0,0,.92));
-      z-index: 70;
-    }
-    .footerInner{
-      width: 100%;
-      max-width: var(--maxw);
-      margin: 0 auto;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72));
       display:flex;
-      gap: 10px;
-      align-items:center;
       justify-content: space-between;
-      flex-wrap: wrap;
+      align-items: center;
     }
-    .progress{
-      flex: 1;
-      min-width: 240px;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.10);
-      border: 1px solid rgba(255,255,255,.18);
-      overflow: hidden;
+
+    .progress {
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.18);
+      overflow:hidden;
+      margin-right:12px;
     }
-    .bar{
-      height: 100%;
+    .bar {
       width: 0%;
-      background: rgba(255,255,255,.55);
-    }
-    .footMeta{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .note{
-      font-size: 11px;
-      color: rgba(255,255,255,.72);
-      white-space: nowrap;
-    }
-    .mono{
-      font-variant-numeric: tabular-nums;
-      letter-spacing: .2px;
-      font-weight: 900;
-      color: rgba(255,255,255,.92);
+      height: 100%;
+      background: var(--accent);
     }
   </style>
 </head>
@@ -397,1008 +185,55 @@
 <body>
   <div class="wrap">
     <div class="card header">
-      <div class="headRow">
-        <div class="titleBlock">
-          <p class="title">Life Insurance Types</p>
-          <p class="subtitle">Flashcards • Quiz • Search • Progress</p>
-        </div>
-        <div class="pillRow">
-          <button class="btn badge active" id="modeBrowse">Browse</button>
-          <button class="btn badge" id="modeFlash">Flashcards</button>
-          <button class="btn badge" id="modeQuiz">Quiz</button>
-          <button class="btn ghost" id="resetBtn">Reset Progress</button>
-        </div>
+      <div>
+        <p class="title">Dashboard</p>
+        <p class="subtitle">Modern glassy card template</p>
+      </div>
+      <div>
+        <button class="btn">Action</button>
       </div>
     </div>
 
     <div class="grid">
-      <div class="card panel" id="leftPanel">
-        <h2 id="leftTitle">BROWSE</h2>
-
-        <div class="row">
-          <div class="search" title="Search by type, category, or feature keyword">
-            <input id="q" type="text" placeholder="Search: term, cash value, level, convertible, MEC, AD&D..." />
+      <div class="card panel">
+        <h2>Panel 1</h2>
+        <p class="muted">Use this section for any content you like. Lists, stats, anything.</p>
+        <div class="card-list">
+          <div class="card-item">
+            <p class="name">Card One</p>
+            <p class="meta">Details about this card</p>
           </div>
-          <button class="btn" id="filterAll">All</button>
-          <button class="btn" id="filterTerm">Term</button>
-          <button class="btn" id="filterPerm">Permanent</button>
-          <button class="btn" id="filterSpec">Specialty</button>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="k">Cards</div>
-            <div class="v" id="statTotal">0</div>
+          <div class="card-item">
+            <p class="name">Card Two</p>
+            <p class="meta">More info here</p>
           </div>
-          <div class="stat">
-            <div class="k">Mastered</div>
-            <div class="v" id="statMastered">0</div>
-          </div>
-          <div class="stat">
-            <div class="k">Due Now</div>
-            <div class="v" id="statDue">0</div>
+          <div class="card-item">
+            <p class="name">Card Three</p>
+            <p class="meta">Extra details</p>
           </div>
         </div>
-
-        <div class="list" id="list"></div>
       </div>
 
-      <div class="card panel" id="rightPanel">
-        <h2 id="rightTitle">STUDY</h2>
-        <p class="muted" id="rightHint">
-          Browse mode: tap a card’s “Study” button to load it here. Flashcards/Quiz mode: use Next.
-        </p>
-
-        <div class="studyCard" id="studyCard">
-          <p class="studyTitle" id="studyName">No card loaded</p>
-
-          <div class="studyBody" id="studyBody">
-            <div>
-              <p class="qaLabel" id="qaLabel1">Front</p>
-              <p class="qaText" id="qaText1">Pick a card to start.</p>
-            </div>
-
-            <div class="divider"></div>
-
-            <div id="backBlock" style="display:none;">
-              <p class="qaLabel" id="qaLabel2">Back</p>
-              <div id="backContent"></div>
-            </div>
-
-            <div id="quizBlock" style="display:none;">
-              <p class="qaLabel">Choose the correct answer</p>
-              <div class="choices" id="choices"></div>
-              <p class="tiny" id="quizFeedback" style="display:none;"></p>
-            </div>
+      <div class="card panel">
+        <h2>Panel 2</h2>
+        <p class="muted">Another section. Can add cards, buttons, stats, charts, etc.</p>
+        <div class="card-list">
+          <div class="card-item">
+            <p class="name">Card A</p>
+            <p class="meta">Any content goes here</p>
           </div>
-
-          <div class="controls">
-            <button class="btn primary" id="revealBtn">Reveal</button>
-            <button class="btn" id="againBtn">Again</button>
-            <button class="btn" id="goodBtn">Good</button>
-            <button class="btn" id="easyBtn">Easy</button>
-            <button class="btn" id="nextBtn">Next</button>
+          <div class="card-item">
+            <p class="name">Card B</p>
+            <p class="meta">Keep it modular</p>
           </div>
-          <p class="tiny" id="studyMeta"></p>
-        </div>
-
-        <div class="card" style="margin-top:12px; padding:12px;">
-          <p class="tiny" style="margin:0;">
-            Notes: names/features can vary by insurer, state, and policy design. This is for exam-level recognition and comparisons.
-          </p>
         </div>
       </div>
     </div>
   </div>
 
   <div class="footerBar">
-    <div class="footerInner">
-      <div class="progress" aria-label="Study progress">
-        <div class="bar" id="bar"></div>
-      </div>
-      <div class="footMeta">
-        <div class="note">Session: <span class="mono" id="sessCount">0</span> reviewed</div>
-        <div class="note">Accuracy: <span class="mono" id="sessAcc">0%</span></div>
-      </div>
-    </div>
+    <div class="progress"><div class="bar" style="width:45%"></div></div>
+    <div class="meta" style="font-size:11px; color:var(--muted)">Footer info • Status</div>
   </div>
-
-<script>
-/* =========================
-   DATA (types + key features)
-   ========================= */
-
-const CARDS = [
-  // TERM LIFE INSURANCE
-  { id:"term-guaranteed", category:"TERM", name:"Guaranteed Term Life Insurance",
-    features:[
-      "Level premium and death benefit for the stated term (commonly 10–30 years).",
-      "Guaranteed renewability is not automatic unless stated; most are level-term with fixed duration.",
-      "Best for temporary needs: income replacement, debt, young families."
-    ],
-    key:"term guaranteed level fixed premium"
-  },
-  { id:"term-modified", category:"TERM", name:"Modified Term Life Insurance",
-    features:[
-      "Premiums start lower and increase at a scheduled point (often after a few years).",
-      "Designed to reduce early cost; long-term cost may exceed level term if kept too long.",
-      "Used when budget is tight today but expected to rise later."
-    ],
-    key:"modified term premium increases later"
-  },
-  { id:"term-convertible", category:"TERM", name:"Convertible Term Life Insurance",
-    features:[
-      "Allows conversion to a permanent policy without new evidence of insurability (within conversion period).",
-      "Conversion can be partial or full depending on contract; premiums jump to permanent pricing.",
-      "Key exam point: protects insurability if health changes."
-    ],
-    key:"convertible convert to permanent no medical"
-  },
-  { id:"term-family-income", category:"TERM", name:"Family Income Benefit Term Insurance",
-    features:[
-      "Pays benefit as an income stream (periodic payments) instead of (or in addition to) a lump sum.",
-      "Income period is tied to term (e.g., until children reach adulthood).",
-      "Often cheaper than equivalent lump-sum coverage."
-    ],
-    key:"family income benefit term monthly income stream"
-  },
-  { id:"term-decreasing", category:"TERM", name:"Decreasing Term Life Insurance",
-    features:[
-      "Death benefit decreases over time (premium often stays level).",
-      "Common use: match a declining obligation (e.g., mortgage balance).",
-      "Cheaper than level term for same initial face amount."
-    ],
-    key:"decreasing term mortgage debt"
-  },
-  { id:"term-rop", category:"TERM", name:"Return of Premium Term Life Insurance",
-    features:[
-      "Refunds some/all premiums paid if you outlive the term (if kept in force).",
-      "Higher premium than comparable level term.",
-      "If surrendered early, refund may be reduced or zero depending on design."
-    ],
-    key:"return of premium rop refund"
-  },
-  { id:"term-art", category:"TERM", name:"Annual Renewable Term Insurance (ART)",
-    features:[
-      "Renews each year; premium increases annually with age.",
-      "Often used short-term or as a rider; can become expensive later.",
-      "Key exam point: annually increasing cost, typically level death benefit."
-    ],
-    key:"annual renewable term art yearly premium increase"
-  },
-  { id:"term-level", category:"TERM", name:"Level Term Life Insurance",
-    features:[
-      "Premium and death benefit stay level for the term (10/20/30 years).",
-      "Most common exam/reference form of term insurance.",
-      "Expires at end of term unless renewed/converted; no cash value."
-    ],
-    key:"level term fixed premium fixed benefit"
-  },
-  { id:"term-increasing", category:"TERM", name:"Increasing Term Life Insurance",
-    features:[
-      "Death benefit increases over time (often to offset inflation).",
-      "Premiums are usually higher than level term; structure varies by carrier.",
-      "Less common; exam focus is ‘benefit increases during term’."
-    ],
-    key:"increasing term inflation"
-  },
-  { id:"term-group", category:"TERM", name:"Group Term Life Insurance",
-    features:[
-      "Coverage provided through an employer/association; typically annual renewable term structure.",
-      "Often has limited portability; coverage may reduce or end when employment ends.",
-      "Usually minimal underwriting for employee; employer may subsidize premiums."
-    ],
-    key:"group term employer association portability"
-  },
-
-  // PERMANENT LIFE INSURANCE
-  { id:"perm-whole", category:"PERMANENT", name:"Whole Life Insurance",
-    features:[
-      "Lifetime coverage with fixed premium (in traditional designs).",
-      "Cash value grows at a guaranteed rate; policy loans available.",
-      "Death benefit generally level; can increase with paid-up additions/dividends."
-    ],
-    key:"whole life permanent cash value guaranteed premium"
-  },
-  { id:"perm-variable", category:"PERMANENT", name:"Variable Life Insurance",
-    features:[
-      "Permanent insurance with cash value invested in separate accounts (market risk).",
-      "Policyowner controls investments; returns not guaranteed; prospectus required.",
-      "Typically has a guaranteed minimum death benefit, but cash value fluctuates."
-    ],
-    key:"variable life separate account market risk securities"
-  },
-  { id:"perm-ul", category:"PERMANENT", name:"Universal Life Insurance (UL)",
-    features:[
-      "Flexible premium payments and adjustable death benefit (within limits).",
-      "Cash value earns interest credited by insurer (current rate subject to change, with minimum guarantee).",
-      "Policy can lapse if cash value can’t cover cost of insurance (COI) and fees."
-    ],
-    key:"universal life flexible premium adjustable death benefit coi"
-  },
-  { id:"perm-iul", category:"PERMANENT", name:"Indexed Universal Life Insurance (IUL)",
-    features:[
-      "UL where interest credited is tied to an index formula (not direct index investment).",
-      "Typically has a floor (often 0%) and a cap/participation rate (limits upside).",
-      "Still subject to COI/fees; performance depends on crediting method and charges."
-    ],
-    key:"iul indexed universal life cap floor participation"
-  },
-  { id:"perm-vul", category:"PERMANENT", name:"Variable Universal Life Insurance (VUL)",
-    features:[
-      "Combines UL flexibility with variable (separate account) investments.",
-      "Highest volatility/complexity: market risk + COI risk; securities regulation/prospectus.",
-      "Can grow strongly in good markets but can lapse if underfunded or markets drop."
-    ],
-    key:"vul variable universal life separate account flexible"
-  },
-  { id:"perm-gul", category:"PERMANENT", name:"Guaranteed Universal Life Insurance (GUL)",
-    features:[
-      "UL designed to guarantee death benefit to a set age (e.g., 90/95/100/121) if premium schedule met.",
-      "Minimal cash value focus; value is ‘guaranteed coverage’ rather than accumulation.",
-      "Missing premium timing/amount can jeopardize guarantee."
-    ],
-    key:"gul guaranteed universal life no-lapse guarantee"
-  },
-  { id:"perm-ful", category:"PERMANENT", name:"Fixed Universal Life Insurance",
-    features:[
-      "UL where interest crediting is declared by insurer (current rate) with a guaranteed minimum.",
-      "No market index link; less upside than IUL but simpler.",
-      "Flexible premium/adjustable death benefit remain core UL traits."
-    ],
-    key:"fixed ul declared interest minimum guarantee"
-  },
-  { id:"perm-par", category:"PERMANENT", name:"Participating Whole Life Insurance",
-    features:[
-      "Eligible to receive dividends (not guaranteed) from insurer’s experience.",
-      "Dividends can be taken as cash, reduce premium, or buy paid-up additions.",
-      "Exam point: participating = dividend eligibility; dividends are not taxable if treated as return of premium."
-    ],
-    key:"participating whole life dividends paid-up additions"
-  },
-  { id:"perm-nonpar", category:"PERMANENT", name:"Non-Participating Whole Life Insurance",
-    features:[
-      "No dividends; benefits based on guaranteed policy values only.",
-      "Often lower premium than participating version for similar base guarantees.",
-      "Simpler: fewer moving parts (no dividend options)."
-    ],
-    key:"non-participating whole life no dividends"
-  },
-  { id:"perm-limitedpay", category:"PERMANENT", name:"Limited-Pay Whole Life Insurance",
-    features:[
-      "Premiums paid for a limited period (e.g., 10-pay, 20-pay) but coverage lasts for life.",
-      "Higher premium during pay period; builds cash value faster early on.",
-      "Used when client wants to ‘finish paying’ before retirement."
-    ],
-    key:"limited pay whole life 10-pay 20-pay paid up"
-  },
-  { id:"perm-single", category:"PERMANENT", name:"Single-Premium Whole Life Insurance",
-    features:[
-      "One large premium creates fully paid-up whole life coverage immediately.",
-      "Often triggers Modified Endowment Contract (MEC) status depending on amount/structure.",
-      "Strong cash value early; liquidity via loans/withdrawals depends on design."
-    ],
-    key:"single premium whole life paid up MEC risk"
-  },
-  { id:"perm-modwhole", category:"PERMANENT", name:"Modified Whole Life Insurance",
-    features:[
-      "Lower initial premium for a set period, then higher premium later (per contract schedule).",
-      "Coverage is permanent; used to reduce early cost.",
-      "Exam point: resembles ‘modified’ term concept but in whole life form."
-    ],
-    key:"modified whole life premiums increase later"
-  },
-
-  // SPECIALTY LIFE INSURANCE
-  { id:"spec-finalexpense", category:"SPECIALTY", name:"Final Expense Insurance",
-    features:[
-      "Small face amount intended for funeral/burial/medical bills at death.",
-      "Often simplified issue (limited underwriting) and higher cost per $1,000.",
-      "May include graded death benefit in early years depending on product."
-    ],
-    key:"final expense funeral burial simplified issue graded"
-  },
-  { id:"spec-survivorship", category:"SPECIALTY", name:"Survivorship Life Insurance (Second-to-Die)",
-    features:[
-      "Insures two lives; pays after the second insured dies.",
-      "Common in estate planning: liquidity for estate taxes, wealth transfer, special needs planning.",
-      "Typically lower premium than two comparable individual policies due to second-to-die risk."
-    ],
-    key:"survivorship second to die estate planning"
-  },
-  { id:"spec-joint", category:"SPECIALTY", name:"Joint Life Insurance (First-to-Die)",
-    features:[
-      "Insures two lives; pays at the first death.",
-      "Used for income replacement for couples, business partners, or debt obligations.",
-      "After payout, coverage ends unless structured with continuation features."
-    ],
-    key:"joint first to die partners couple"
-  },
-  { id:"spec-juvenile", category:"SPECIALTY", name:"Juvenile Life Insurance",
-    features:[
-      "Coverage on a child; often permanent with small face amount and cash value.",
-      "Primary reason: lock in insurability; secondary: modest accumulation/gifting.",
-      "Common rider: guaranteed purchase options later without medical underwriting."
-    ],
-    key:"juvenile life child insurability guaranteed purchase option"
-  },
-  { id:"spec-groupperm", category:"SPECIALTY", name:"Group Life Insurance (Permanent versions)",
-    features:[
-      "Employer/association-provided permanent coverage is less common than group term.",
-      "May allow employee to continue/convert to an individual permanent policy.",
-      "Terms vary heavily by plan; exam focus is ‘group arrangement + potential conversion/portability’."
-    ],
-    key:"group permanent conversion portability"
-  },
-
-  // OTHER TERM
-  { id:"term-mortgage", category:"TERM", name:"Mortgage Protection Term Insurance",
-    features:[
-      "Typically structured as decreasing term to match mortgage payoff schedule.",
-      "Designed so benefit declines as mortgage balance declines.",
-      "Goal: pay off mortgage if insured dies during term."
-    ],
-    key:"mortgage protection decreasing term"
-  },
-  { id:"term-creditlife", category:"TERM", name:"Credit Life Insurance",
-    features:[
-      "Usually pays a specific lender to cover a loan balance on death.",
-      "Often decreasing benefit; can be expensive per dollar of coverage.",
-      "Common with auto/personal loans; underwriting is typically limited."
-    ],
-    key:"credit life lender loan balance decreasing"
-  },
-
-  // OTHER PERMANENT
-  { id:"perm-overfunded", category:"PERMANENT", name:"Overfunded Life Insurance",
-    features:[
-      "Design approach: pay premiums above minimum to build cash value faster (usually UL/IUL/VUL).",
-      "Must avoid MEC limits if tax-advantaged access is a goal (7-pay test concept).",
-      "Still subject to charges/COI; poor design can still lapse."
-    ],
-    key:"overfunded life high premium cash value MEC avoid"
-  },
-  { id:"perm-mec", category:"PERMANENT", name:"Modified Endowment Contract (MEC Life Insurance)",
-    features:[
-      "Tax classification: funded too quickly relative to death benefit (fails 7-pay test).",
-      "Loans/withdrawals taxed as LIFO (gains first) and may incur 10% penalty if under age 59½.",
-      "Death benefit generally remains income tax-free to beneficiaries (general rule)."
-    ],
-    key:"MEC 7-pay test LIFO 59.5 penalty"
-  },
-
-  // OTHER SPECIALTY
-  { id:"spec-add", category:"SPECIALTY", name:"Accidental Death & Dismemberment (AD&D)",
-    features:[
-      "Pays only for covered accidents: accidental death and/or specific injuries (loss of limb, etc.).",
-      "Not a substitute for life insurance (no payout for illness/natural causes).",
-      "Often offered as workplace benefit or as a rider."
-    ],
-    key:"AD&D accidental only dismemberment rider"
-  },
-  { id:"spec-burial", category:"SPECIALTY", name:"Burial Insurance",
-    features:[
-      "Common consumer term often overlapping with final expense coverage.",
-      "Designed for funeral/burial costs; typically small face amount.",
-      "May be simplified issue/guaranteed issue with graded benefits."
-    ],
-    key:"burial insurance final expense graded"
-  },
-  { id:"spec-employer", category:"SPECIALTY", name:"Employer-Sponsored Life Insurance",
-    features:[
-      "Coverage offered through employer (often group term; sometimes supplemental/voluntary).",
-      "May be partially employer-paid; underwriting may be simplified up to a guaranteed issue amount.",
-      "Portability/conversion options vary; coverage often tied to employment."
-    ],
-    key:"employer sponsored group life portability conversion"
-  },
-];
-
-/* =========================
-   PROGRESS MODEL (Leitner-lite)
-   ========================= */
-
-const LS_KEY = "insStudy_v1";
-
-function now(){ return Date.now(); }
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) throw 0;
-    const st = JSON.parse(raw);
-    if(!st || !st.cards) throw 0;
-    return st;
-  }catch(e){
-    const base = {
-      cards: {},
-      session: { reviewed:0, correct:0, wrong:0 }
-    };
-    CARDS.forEach(c=>{
-      base.cards[c.id] = { box:0, due:0, seen:0, correct:0, wrong:0, last:0 };
-    });
-    return base;
-  }
-}
-
-let STATE = loadState();
-
-function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
-
-function resetState(){
-  localStorage.removeItem(LS_KEY);
-  STATE = loadState();
-  saveUI();
-  renderList();
-  loadStudyCard(null, true);
-}
-
-/* =========================
-   STUDY SCHEDULING
-   ========================= */
-
-function dueDelayMs(box, rating){
-  const base = [10*1000, 60*1000, 4*60*1000, 20*60*1000];
-  const mult = rating===0 ? 0.25 : rating===1 ? 1 : 2;
-  const idx = Math.max(0, Math.min(3, box));
-  return Math.round(base[idx] * mult);
-}
-
-function markCard(id, rating){
-  const s = STATE.cards[id];
-  s.seen += 1;
-  s.last = now();
-
-  if(rating === 0){
-    s.wrong += 1;
-    s.box = Math.max(0, s.box - 1);
-    s.due = now() + dueDelayMs(s.box, 0);
-    STATE.session.reviewed += 1;
-    STATE.session.wrong += 1;
-  } else if(rating === 1){
-    s.correct += 1;
-    s.box = Math.min(3, s.box + 1);
-    s.due = now() + dueDelayMs(s.box, 1);
-    STATE.session.reviewed += 1;
-    STATE.session.correct += 1;
-  } else {
-    s.correct += 1;
-    s.box = Math.min(3, s.box + 2);
-    s.due = now() + dueDelayMs(s.box, 2);
-    STATE.session.reviewed += 1;
-    STATE.session.correct += 1;
-  }
-  saveState();
-  saveUI();
-}
-
-/* =========================
-   UI STATE
-   ========================= */
-
-let MODE = "browse";
-let FILTER = "ALL";
-let CURRENT_ID = null;
-let REVEALED = false;
-let QUIZ_LOCKED = false;
-
-const els = {
-  modeBrowse: document.getElementById("modeBrowse"),
-  modeFlash: document.getElementById("modeFlash"),
-  modeQuiz: document.getElementById("modeQuiz"),
-  resetBtn: document.getElementById("resetBtn"),
-
-  filterAll: document.getElementById("filterAll"),
-  filterTerm: document.getElementById("filterTerm"),
-  filterPerm: document.getElementById("filterPerm"),
-  filterSpec: document.getElementById("filterSpec"),
-
-  q: document.getElementById("q"),
-
-  statTotal: document.getElementById("statTotal"),
-  statMastered: document.getElementById("statMastered"),
-  statDue: document.getElementById("statDue"),
-  list: document.getElementById("list"),
-
-  leftTitle: document.getElementById("leftTitle"),
-  rightTitle: document.getElementById("rightTitle"),
-  rightHint: document.getElementById("rightHint"),
-
-  studyName: document.getElementById("studyName"),
-  qaLabel1: document.getElementById("qaLabel1"),
-  qaText1: document.getElementById("qaText1"),
-  qaLabel2: document.getElementById("qaLabel2"), /* FIX */
-  backBlock: document.getElementById("backBlock"),
-  backContent: document.getElementById("backContent"),
-  quizBlock: document.getElementById("quizBlock"),
-  choices: document.getElementById("choices"),
-  quizFeedback: document.getElementById("quizFeedback"),
-
-  revealBtn: document.getElementById("revealBtn"),
-  againBtn: document.getElementById("againBtn"),
-  goodBtn: document.getElementById("goodBtn"),
-  easyBtn: document.getElementById("easyBtn"),
-  nextBtn: document.getElementById("nextBtn"),
-  studyMeta: document.getElementById("studyMeta"),
-
-  bar: document.getElementById("bar"),
-  sessCount: document.getElementById("sessCount"),
-  sessAcc: document.getElementById("sessAcc"),
-};
-
-function catClass(cat){
-  if(cat === "TERM") return "term";
-  if(cat === "PERMANENT") return "perm";
-  return "spec";
-}
-
-function countMastered(){
-  let m = 0;
-  CARDS.forEach(c=>{
-    const s = STATE.cards[c.id];
-    if(s.box >= 3) m++;
-  });
-  return m;
-}
-
-function countDue(){
-  let d = 0;
-  CARDS.forEach(c=>{
-    const s = STATE.cards[c.id];
-    if(s.due <= now()) d++;
-  });
-  return d;
-}
-
-function saveUI(){
-  els.statTotal.textContent = String(CARDS.length);
-  els.statMastered.textContent = String(countMastered());
-  els.statDue.textContent = String(countDue());
-
-  const reviewed = STATE.session.reviewed || 0;
-  const correct = STATE.session.correct || 0;
-  const acc = reviewed ? Math.round((correct / reviewed) * 100) : 0;
-
-  els.sessCount.textContent = String(reviewed);
-  els.sessAcc.textContent = String(acc) + "%";
-
-  const pct = Math.round((countMastered() / CARDS.length) * 100);
-  els.bar.style.width = pct + "%";
-}
-
-/* =========================
-   FILTER + SEARCH
-   ========================= */
-
-function filteredCards(){
-  const q = (els.q.value || "").trim().toLowerCase();
-  return CARDS.filter(c=>{
-    if(FILTER !== "ALL" && c.category !== FILTER) return false;
-    if(!q) return true;
-    const hay = (c.name + " " + c.category + " " + c.features.join(" ") + " " + (c.key||"")).toLowerCase();
-    return hay.includes(q);
-  });
-}
-
-/* =========================
-   LIST RENDER
-   ========================= */
-
-function renderList(){
-  const arr = filteredCards();
-  els.list.innerHTML = "";
-
-  arr.forEach(c=>{
-    const s = STATE.cards[c.id];
-
-    const item = document.createElement("div");
-    item.className = "item";
-
-    const top = document.createElement("div");
-    top.className = "itemTop";
-
-    const left = document.createElement("div");
-    left.style.minWidth = "220px";
-    left.style.flex = "1";
-
-    const nm = document.createElement("p");
-    nm.className = "name";
-    nm.textContent = c.name;
-
-    const tiny = document.createElement("p");
-    tiny.className = "tiny";
-    const dueTxt = s.due <= now() ? "Due now" : ("Due in " + prettyMs(s.due - now()));
-    tiny.textContent = "Box " + s.box + " • Seen " + s.seen + " • " + dueTxt;
-
-    left.appendChild(nm);
-    left.appendChild(tiny);
-
-    const meta = document.createElement("div");
-    meta.className = "meta";
-
-    const tag = document.createElement("span");
-    tag.className = "tag " + catClass(c.category);
-    tag.textContent = c.category;
-
-    const studyBtn = document.createElement("button");
-    studyBtn.className = "btn";
-    studyBtn.textContent = "Study";
-    studyBtn.onclick = ()=> loadStudyCard(c.id, true);
-
-    meta.appendChild(tag);
-    meta.appendChild(studyBtn);
-
-    top.appendChild(left);
-    top.appendChild(meta);
-
-    const ul = document.createElement("ul");
-    ul.className = "features";
-    c.features.forEach(f=>{
-      const li = document.createElement("li");
-      li.textContent = f;
-      ul.appendChild(li);
-    });
-
-    item.appendChild(top);
-    item.appendChild(ul);
-    els.list.appendChild(item);
-  });
-
-  saveUI();
-}
-
-function prettyMs(ms){
-  const sec = Math.max(0, Math.round(ms / 1000));
-  if(sec < 60) return sec + "s";
-  const min = Math.round(sec / 60);
-  if(min < 60) return min + "m";
-  const hr = Math.round(min / 60);
-  return hr + "h";
-}
-
-/* =========================
-   STUDY CARD LOADERS
-   ========================= */
-
-function pickNextDue(){
-  const candidates = CARDS
-    .filter(c=>{
-      if(FILTER !== "ALL" && c.category !== FILTER) return false;
-      return STATE.cards[c.id].due <= now();
-    })
-    .sort((a,b)=>{
-      const sa = STATE.cards[a.id], sb = STATE.cards[b.id];
-      if(sa.box !== sb.box) return sa.box - sb.box;
-      return (sa.last||0) - (sb.last||0);
-    });
-
-  if(candidates.length) return candidates[0].id;
-
-  const alt = CARDS
-    .filter(c=> FILTER==="ALL" || c.category===FILTER)
-    .sort((a,b)=> (STATE.cards[a.id].seen - STATE.cards[b.id].seen) || (STATE.cards[a.id].box - STATE.cards[b.id].box));
-
-  return alt.length ? alt[0].id : null;
-}
-
-function loadStudyCard(id, force=false){
-  if(!id){
-    CURRENT_ID = null;
-    REVEALED = false;
-    QUIZ_LOCKED = false;
-
-    els.studyName.textContent = "No card loaded";
-    els.qaLabel1.textContent = "Front";
-    els.qaText1.textContent = "Pick a card to start.";
-    els.backBlock.style.display = "none";
-    els.quizBlock.style.display = "none";
-
-    els.revealBtn.style.display = "inline-flex";
-    els.againBtn.disabled = true;
-    els.goodBtn.disabled = true;
-    els.easyBtn.disabled = true;
-
-    els.studyMeta.textContent = "";
-    return;
-  }
-  if(!force && CURRENT_ID === id) return;
-
-  CURRENT_ID = id;
-  REVEALED = false;
-  QUIZ_LOCKED = false;
-
-  const c = CARDS.find(x=> x.id===id);
-  const s = STATE.cards[id];
-
-  els.studyName.textContent = c.name;
-
-  if(MODE === "browse" || MODE === "flash"){
-    els.qaLabel1.textContent = "Front";
-    els.qaText1.textContent = "Define it and list the biggest features from memory.";
-
-    els.backBlock.style.display = "none";
-    els.quizBlock.style.display = "none";
-
-    els.revealBtn.style.display = "inline-flex";
-    els.revealBtn.disabled = false;
-
-    els.againBtn.disabled = true;
-    els.goodBtn.disabled = true;
-    els.easyBtn.disabled = true;
-
-    els.studyMeta.textContent = c.category + " • Box " + s.box + " • Seen " + s.seen + " • Correct " + s.correct + " • Wrong " + s.wrong;
-  } else {
-    els.qaLabel1.textContent = "Question";
-    els.qaText1.textContent = quizQuestionText(c);
-
-    els.backBlock.style.display = "none";
-    els.quizBlock.style.display = "block";
-    els.revealBtn.style.display = "none";
-
-    els.againBtn.disabled = true;
-    els.goodBtn.disabled = true;
-    els.easyBtn.disabled = true;
-
-    buildChoices(c);
-    els.quizFeedback.style.display = "none";
-    els.quizFeedback.textContent = "";
-
-    els.studyMeta.textContent = c.category + " • Box " + s.box + " • Seen " + s.seen + " • Correct " + s.correct + " • Wrong " + s.wrong;
-  }
-}
-
-function revealBack(){
-  if(!CURRENT_ID) return;
-  if(MODE === "quiz") return;
-
-  const c = CARDS.find(x=> x.id===CURRENT_ID);
-  els.backContent.innerHTML = "";
-
-  const row = document.createElement("div");
-  row.className = "row";
-
-  const tag = document.createElement("span");
-  tag.className = "tag " + catClass(c.category);
-  tag.textContent = c.category;
-
-  const small = document.createElement("span");
-  small.className = "tiny";
-  small.textContent = "Biggest features:";
-
-  row.appendChild(tag);
-  row.appendChild(small);
-
-  const ul = document.createElement("ul");
-  ul.className = "features";
-  c.features.forEach(f=>{
-    const li = document.createElement("li");
-    li.textContent = f;
-    ul.appendChild(li);
-  });
-
-  els.backContent.appendChild(row);
-  els.backContent.appendChild(ul);
-
-  els.backBlock.style.display = "block";
-  REVEALED = true;
-
-  els.againBtn.disabled = false;
-  els.goodBtn.disabled = false;
-  els.easyBtn.disabled = false;
-}
-
-function quizQuestionText(card){
-  if(card.category === "TERM") return "Which policy type matches these term-style features?";
-  if(card.category === "PERMANENT") return "Which policy type matches these permanent-style features?";
-  return "Which policy type matches these specialty-style features?";
-}
-
-function buildChoices(correctCard){
-  const pool = CARDS
-    .filter(c=> c.id !== correctCard.id)
-    .filter(c=> FILTER==="ALL" ? true : c.category===FILTER);
-
-  let distractors = pool.filter(c=> c.category === correctCard.category);
-  if(distractors.length < 3) distractors = pool;
-
-  shuffleInPlace(distractors);
-  distractors = distractors.slice(0,3);
-
-  const options = [correctCard, ...distractors];
-  shuffleInPlace(options);
-
-  els.choices.innerHTML = "";
-  options.forEach(opt=>{
-    const b = document.createElement("button");
-    b.className = "choice";
-    b.textContent = opt.name;
-    b.onclick = ()=> onPickChoice(opt.id === correctCard.id, correctCard, opt.name, b);
-    els.choices.appendChild(b);
-  });
-
-  els.backContent.innerHTML = "";
-  const ul = document.createElement("ul");
-  ul.className = "features";
-  correctCard.features.slice(0,3).forEach(f=>{
-    const li = document.createElement("li");
-    li.textContent = f;
-    ul.appendChild(li);
-  });
-  els.backContent.appendChild(ul);
-  els.backBlock.style.display = "block";
-  els.qaLabel2.textContent = "Clues";
-}
-
-/* FIXED: onPickChoice had duplicated/mismatched blocks causing JS parse errors */
-function onPickChoice(isCorrect, correctCard, pickedName, btn){
-  if(QUIZ_LOCKED) return;
-  QUIZ_LOCKED = true;
-
-  const buttons = Array.from(els.choices.querySelectorAll("button.choice"));
-  buttons.forEach(b=> b.disabled = true);
-
-  if(isCorrect){
-    btn.classList.add("correct");
-    els.quizFeedback.style.display = "block";
-    els.quizFeedback.textContent = "Correct: " + correctCard.name + " — next.";
-    els.quizFeedback.style.color = "rgba(120,255,170,.95)";
-
-    markCard(correctCard.id, 1);
-  } else {
-    btn.classList.add("wrong");
-    buttons.forEach(b=>{
-      if(b.textContent === correctCard.name) b.classList.add("correct");
-    });
-
-    els.quizFeedback.style.display = "block";
-    els.quizFeedback.textContent = "Wrong: you picked “" + pickedName + "”. Correct is “" + correctCard.name + "”.";
-    els.quizFeedback.style.color = "rgba(255,140,140,.95)";
-
-    markCard(correctCard.id, 0);
-  }
-
-  // keep grading buttons disabled in quiz to avoid double-counting
-  els.againBtn.disabled = true;
-  els.goodBtn.disabled = true;
-  els.easyBtn.disabled = true;
-
-  // refresh meta immediately
-  const s = STATE.cards[correctCard.id];
-  els.studyMeta.textContent = correctCard.category + " • Box " + s.box + " • Seen " + s.seen + " • Correct " + s.correct + " • Wrong " + s.wrong;
-
-  // auto-advance
-  setTimeout(() => {
-    QUIZ_LOCKED = false;
-    loadStudyCard(pickNextDue(), true);
-    renderList();
-  }, isCorrect ? 350 : 700);
-}
-
-/* =========================
-   UTIL
-   ========================= */
-
-function shuffleInPlace(arr){
-  for(let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
-
-/* =========================
-   MODE SWITCH
-   ========================= */
-
-function setMode(mode){
-  MODE = mode;
-
-  els.modeBrowse.classList.toggle("active", mode==="browse");
-  els.modeFlash.classList.toggle("active", mode==="flash");
-  els.modeQuiz.classList.toggle("active", mode==="quiz");
-
-  els.leftTitle.textContent = mode.toUpperCase();
-  els.rightTitle.textContent = "STUDY";
-
-  if(mode === "browse"){
-    els.rightHint.textContent = "Browse mode: tap a card’s “Study” button to load it here. Flashcards/Quiz mode: use Next.";
-    els.revealBtn.style.display = "inline-flex";
-  }else if(mode === "flash"){
-    els.rightHint.textContent = "Flashcards: Reveal → grade yourself (Again/Good/Easy) → Next.";
-    els.revealBtn.style.display = "inline-flex";
-  }else{
-    els.rightHint.textContent = "Quiz: pick the right type. Misses count as Again automatically.";
-    els.revealBtn.style.display = "none";
-  }
-
-  // Browse doesn't need auto-load; Flash/Quiz does.
-  if(mode === "browse"){
-    loadStudyCard(null, true);
-  } else {
-    loadStudyCard(pickNextDue(), true);
-  }
-
-  renderList();
-}
-
-/* =========================
-   FILTER BUTTONS
-   ========================= */
-
-function setFilter(f){
-  FILTER = f;
-
-  els.filterAll.classList.toggle("active", f==="ALL");
-  els.filterTerm.classList.toggle("active", f==="TERM");
-  els.filterPerm.classList.toggle("active", f==="PERMANENT");
-  els.filterSpec.classList.toggle("active", f==="SPECIALTY");
-
-  renderList();
-
-  if(MODE !== "browse"){
-    loadStudyCard(pickNextDue(), true);
-  } else if(CURRENT_ID){
-    const c = CARDS.find(x=> x.id===CURRENT_ID);
-    if(FILTER !== "ALL" && c && c.category !== FILTER){
-      loadStudyCard(null, true);
-    }
-  }
-}
-
-/* =========================
-   EVENTS
-   ========================= */
-
-els.modeBrowse.onclick = ()=> setMode("browse");
-els.modeFlash.onclick  = ()=> setMode("flash");
-els.modeQuiz.onclick   = ()=> setMode("quiz");
-
-els.resetBtn.onclick = ()=> {
-  const ok = confirm("Reset all progress (boxes, due times, session stats)?");
-  if(ok) resetState();
-};
-
-els.filterAll.onclick  = ()=> setFilter("ALL");
-els.filterTerm.onclick = ()=> setFilter("TERM");
-els.filterPerm.onclick = ()=> setFilter("PERMANENT");
-els.filterSpec.onclick = ()=> setFilter("SPECIALTY");
-
-els.q.addEventListener("input", ()=> renderList());
-
-els.revealBtn.onclick = ()=> revealBack();
-
-els.againBtn.onclick = ()=> {
-  if(!CURRENT_ID) return;
-  markCard(CURRENT_ID, 0);
-  loadStudyCard(pickNextDue(), true);
-  renderList();
-};
-
-els.goodBtn.onclick = ()=> {
-  if(!CURRENT_ID) return;
-  markCard(CURRENT_ID, 1);
-  loadStudyCard(pickNextDue(), true);
-  renderList();
-};
-
-els.easyBtn.onclick = ()=> {
-  if(!CURRENT_ID) return;
-  markCard(CURRENT_ID, 2);
-  loadStudyCard(pickNextDue(), true);
-  renderList();
-};
-
-els.nextBtn.onclick = ()=> {
-  loadStudyCard(pickNextDue(), true);
-  renderList();
-};
-
-/* =========================
-   INIT (FIXED: no final override to "No card loaded" after mode setup)
-   ========================= */
-
-saveUI();
-setFilter("ALL");
-setMode("browse");
-</script>
 </body>
 </html>
